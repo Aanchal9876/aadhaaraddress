@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "758505780093",
+    "project_id": "aadhar-address-updation",
+    "storage_bucket": "aadhar-address-updation.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:758505780093:android:57bc41cc455e5e0d45d214",
+        "android_client_info": {
+          "package_name": "com.example.aadharaddressupdation"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "758505780093-2fvv5jg905r2is8clu3667gcqq76uprq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDRRnj_niuVIExzdZEllrK6CEAEDdbTKPA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "758505780093-2fvv5jg905r2is8clu3667gcqq76uprq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

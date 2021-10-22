@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Aadhar Address Updation</string>
+    <string name="dashboard">Dashboard</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="AadharHint">9xx0xx0xx0</string>
+    <string name="EnterAadhar">Enter your 10-digit mobile number</string>
+    <string name="SendOTP">We will send an OTP to your registered mobile number in Aadhar</string>
+    <string name="OTPHeader">OTP Verification</string>
+</resources>
