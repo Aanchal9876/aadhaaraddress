@@ -1,10 +1,17 @@
 <resources>
     <string name="app_name">Aadhar Address Updation</string>
     <string name="dashboard">Dashboard</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="AadharHint">9xx0xx0xx0</string>
-    <string name="EnterAadhar">Enter your 10-digit mobile number</string>
+    <string name="AadharHint">xxxx xxxx xxxx</string>
+    <string name="EnterAadhar">Enter your 12-digit Aadhar Number</string>
     <string name="SendOTP">We will send an OTP to your registered mobile number in Aadhar</string>
     <string name="OTPHeader">OTP Verification</string>
+    <string name="AUTH_REQUEST_AUA">"public"</string>
+    <string name="AUTH_REQUEST_ASA">"public"</string>
+    <string name="AUTH_REQUEST_AUA_LK"> "MAElpSz56NccNf11_wSM_RrXwa7n8_CaoWRrjYYWouA1r8IoJjuaGYg"</string>
+    <string name="URL">"https://otp-stage.uidai.gov.in/uidotpserver/2.5"</string>
+    <string name="AUTH_REQUEST_ASA_LK" >"MEY2cG1nhC02dzj6hnqyKN2A1u6U0LcLAYaPBaLI-3qE-FtthtweGuk"</string>
+    <string name="SIGNATURE_FILE">"signatureFile"</string>
+    <string name="SIGNATURE_PASSWORD">"public"</string>
+    <string name="SIGNATURE_ALIAS"> "PublicAUAforStagingServices"</string>
 </resources>
