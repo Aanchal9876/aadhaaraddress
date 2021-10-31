@@ -1,10 +1,8 @@
 package com.example.aadharaddressupdation.ui.otpverification
 
-import android.app.Activity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,29 +10,26 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
 import android.widget.Toast
+import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.android.volley.Request
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
+import com.example.aadharaddressupdation.R
 import com.example.aadharaddressupdation.dao.UserDao
 import com.example.aadharaddressupdation.databinding.FragmentEnterOTPBinding
 import com.example.aadharaddressupdation.models.User
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.PhoneAuthCredential
-import com.google.firebase.auth.PhoneAuthOptions
-import com.google.firebase.auth.PhoneAuthProvider
-import java.util.concurrent.TimeUnit
+import org.json.JSONObject
+
 
 class EnterOTP : Fragment() {
-    private lateinit var mCallBacks: PhoneAuthProvider.OnVerificationStateChangedCallbacks
-    private lateinit var firebaseAuth: FirebaseAuth
+
     private var _binding: FragmentEnterOTPBinding?=null
     private val binding get()=_binding
     // val args:EnterOTPArgs by navArgs()
 
-    override fun onStart() {
-        super.onStart()
-        val currentUser=firebaseAuth.currentUser
-        if(currentUser!=null)
-            updateUI(firebaseAuth)
-    }
+
 
      override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,14 +48,10 @@ class EnterOTP : Fragment() {
         val inputNumber4:EditText?= binding?.box4
         val inputNumber5:EditText?= binding?.box5
         val inputNumber6:EditText?= binding?.box6
-        firebaseAuth= FirebaseAuth.getInstance()
         val progress: ProgressBar?=binding?.progressBar
-        val amount=arguments?.getString("amount")
-        val _otpCorrect=arguments?.getString("id")
-
-        val token=arguments?.get("token")
-        val otpCorrect=_otpCorrect.toString()
-        binding?.showAadhar?.text = String.format("%s",amount)
+        val uid=arguments?.getString("uid")
+        val txnId=arguments?.getString("txnId").toString()
+        binding?.showAadhar?.text = uid
         val button:Button?=binding?.continueButton
 
         button?.setOnClickListener {
@@ -76,8 +67,7 @@ class EnterOTP : Fragment() {
 
                     progress?.visibility=View.VISIBLE
                     button.visibility =View.INVISIBLE
-
-                    verifyPhoneNumberWithCode(otpCorrect,otpByUser)
+                    checkOTP(uid!!,txnId,otpByUser)
                 }
                 else
                     Toast.makeText(activity,"Please Enter ALL numbers",Toast.LENGTH_SHORT).show()
@@ -85,16 +75,58 @@ class EnterOTP : Fragment() {
         }
         numberOTPMove()
 
-        binding?.resendOtp?.setOnClickListener{
-            binding?.progressBar?.visibility=View.GONE
-            binding?.continueButton?.visibility =View.VISIBLE
-            resendVerificationCode(amount.toString(),
-                token as PhoneAuthProvider.ForceResendingToken
-            )
-        }
+//        binding?.resendOtp?.setOnClickListener{
+//            binding?.progressBar?.visibility=View.GONE
+//            binding?.continueButton?.visibility =View.VISIBLE
+//            resendVerificationCode(amount.toString(),
+//                token as PhoneAuthProvider.ForceResendingToken
+//            )
+//        }
     }
 
-    private fun numberOTPMove() {
+
+    private fun checkOTP(uid:String,txnId:String,otp:String)
+    {
+        val jsonObject = JSONObject()
+
+        jsonObject.put("uid",uid)
+        jsonObject.put("txnId",txnId)
+        jsonObject.put("otp",otp)
+        val url="https://stage1.uidai.gov.in/onlineekyc/getAuth"
+        val que= Volley.newRequestQueue(context)
+        val req= JsonObjectRequest(
+            Request.Method.POST,url,jsonObject,
+            { response->
+                val status=response["status"].toString()
+                if(status=="Y" || status=="y")
+                {
+                    val dao=UserDao()
+                    val bundle= bundleOf("uid" to uid)
+                    if(dao.addUser(User(uid,"","",loggedIn = true, reqAccepted = false)))
+                        findNavController().navigate(R.id.dashboardFragment,bundle)
+                    else
+                        Toast.makeText(activity,"You're logged in through other device!",Toast.LENGTH_LONG).show()
+                }
+                else
+                {
+                    binding?.progressBar?.visibility = View.INVISIBLE
+                    binding?.continueButton?.visibility = View.VISIBLE
+                    if(response["errCode"].toString()=="998")
+                        Toast.makeText(activity, "Invalid Aadhar Number", Toast.LENGTH_SHORT).show()
+                    else
+                        Toast.makeText(activity, "You entered the wrong OTP.", Toast.LENGTH_SHORT).show()
+                }
+            },{
+                binding?.progressBar?.visibility = View.INVISIBLE
+                binding?.continueButton?.visibility = View.VISIBLE
+                Toast.makeText(activity, "Some error occurred, please try again after some time.", Toast.LENGTH_SHORT).show()
+            }
+        )
+        que.add(req)
+    }
+
+
+     fun numberOTPMove() {
         val inputNumber1:EditText?= binding?.box1
         val inputNumber2:EditText?= binding?.box2
         val inputNumber3:EditText?= binding?.box3
@@ -169,61 +201,8 @@ class EnterOTP : Fragment() {
 
     }
 
-    private fun startPhoneNumberVerification(phone:String)
-    {
-        val options=PhoneAuthOptions.newBuilder(firebaseAuth)
-            .setPhoneNumber(phone)
-            .setTimeout(60L,TimeUnit.SECONDS)
-            .setCallbacks(mCallBacks)
-            .build()
-        PhoneAuthProvider.verifyPhoneNumber(options)
-    }
-
-    private fun resendVerificationCode(phone:String, token:PhoneAuthProvider.ForceResendingToken)
-    {
-
-        val options=PhoneAuthOptions.newBuilder(firebaseAuth)
-            .setPhoneNumber(phone)
-            .setTimeout(60L,TimeUnit.SECONDS)
-            .setCallbacks(mCallBacks)
-            .setActivity(activity as Activity)
-            .setForceResendingToken(token)
-            .build()
-        PhoneAuthProvider.verifyPhoneNumber(options)
-    }
-
-    private fun verifyPhoneNumberWithCode(verificationId:String,code:String)
-    {
-        val credential=PhoneAuthProvider.getCredential(verificationId,code)
-        signInWithPhoneAuthCredential(credential)
-
-    }
-
-    private fun signInWithPhoneAuthCredential(credential: PhoneAuthCredential) {
-        firebaseAuth.signInWithCredential(credential)
-            .addOnSuccessListener {
-               updateUI(firebaseAuth)
-            }
-            .addOnFailureListener {e->
-                binding?.progressBar?.visibility=View.GONE
-                binding?.continueButton?.visibility =View.VISIBLE
-                Toast.makeText(activity,"${e.message}",Toast.LENGTH_LONG).show()
-            }
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-    }
-
-    private fun updateUI(firebaseAuth: FirebaseAuth)
-    {
-        val phone= firebaseAuth.currentUser?.phoneNumber.toString()
-        val user=User(firebaseAuth.currentUser!!.uid,phone)
-        val usersDao=UserDao()
-        usersDao.addUser(user)
-        Toast.makeText(activity,"Logged in as $phone",Toast.LENGTH_LONG).show()
-        val action=EnterOTPDirections.actionEnterOTP2ToDashboardFragment()
-        findNavController().navigate(action)
     }
 }

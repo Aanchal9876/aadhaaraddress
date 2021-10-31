@@ -10,8 +10,18 @@
     <string name="AUTH_REQUEST_ASA">"public"</string>
     <string name="AUTH_REQUEST_AUA_LK"> "MAElpSz56NccNf11_wSM_RrXwa7n8_CaoWRrjYYWouA1r8IoJjuaGYg"</string>
     <string name="URL">"https://otp-stage.uidai.gov.in/uidotpserver/2.5"</string>
-    <string name="AUTH_REQUEST_ASA_LK" >"MEY2cG1nhC02dzj6hnqyKN2A1u6U0LcLAYaPBaLI-3qE-FtthtweGuk"</string>
+    <string name="AUTH_REQUEST_ASA_LK">"MEY2cG1nhC02dzj6hnqyKN2A1u6U0LcLAYaPBaLI-3qE-FtthtweGuk"</string>
     <string name="SIGNATURE_FILE">"signatureFile"</string>
     <string name="SIGNATURE_PASSWORD">"public"</string>
     <string name="SIGNATURE_ALIAS"> "PublicAUAforStagingServices"</string>
+    <string name="EnterLandlordMobile">Select your landlord\'s 10-digit mobile number</string>
+    <string name="MobileHint">1234567890</string>
+    <string name="or">OR</string>
+    <string name="addressHint">N/A</string>
+    <string name="AadhaarHint">1111 2222 3333</string>
+    <string name="sendRequest">Send Request to Landlord</string>
+    <string name="EnterLandlordAadhaar">Enter your landlord\'s 12-digit Aadhaar number</string>
+    <string name="requestButton">Send Request</string>
+    <string name="noResources">You don\'t have any requests as of yet.</string>
+    <string name="showAadhar">Your 12-digit Aadhar Number is: </string>
 </resources>

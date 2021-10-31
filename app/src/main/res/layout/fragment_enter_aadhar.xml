@@ -37,7 +37,7 @@
             android:text="@string/SendOTP"
             android:textSize="14sp"
             />
-        
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -50,7 +50,6 @@
             android:gravity="center"
             android:text="@string/EnterAadhar"
             android:textSize="14sp"
-            android:id="@+id/tempid"
             />
         <LinearLayout
             android:layout_width="match_parent"

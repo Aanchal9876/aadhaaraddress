@@ -59,10 +59,45 @@
         android:id="@+id/landLordFragment"
         android:name="com.example.aadharaddressupdation.ui.request.LandLordFragment"
         android:label="fragment_land_lord"
-        tools:layout="@layout/fragment_land_lord" />
+        tools:layout="@layout/fragment_land_lord" >
+        <action
+            android:id="@+id/action_landLordFragment_to_landLordEKyc1"
+            app:destination="@id/landLordEKyc1" />
+    </fragment>
     <fragment
         android:id="@+id/checkStatus"
         android:name="com.example.aadharaddressupdation.ui.request.CheckStatus"
         android:label="fragment_check_status"
-        tools:layout="@layout/fragment_check_status" />
+        tools:layout="@layout/fragment_check_status" >
+        <action
+            android:id="@+id/action_checkStatus_to_checkStatusSc2"
+            app:destination="@id/checkStatusSc2" />
+    </fragment>
+    <fragment
+        android:id="@+id/landLordEKyc1"
+        android:name="com.example.aadharaddressupdation.ui.request.LandLordEKyc1"
+        android:label="fragment_land_lord_e_kyc1"
+        tools:layout="@layout/fragment_land_lord_e_kyc1" >
+        <action
+            android:id="@+id/action_landLordEKyc1_to_showAadharDesigned"
+            app:destination="@id/showAadharDesigned" />
+    </fragment>
+    <fragment
+        android:id="@+id/showAadharDesigned"
+        android:name="com.example.aadharaddressupdation.ui.request.ShowAadharDesigned"
+        android:label="fragment_show_aadhar_designed"
+        tools:layout="@layout/fragment_show_aadhar_designed" >
+        <action
+            android:id="@+id/action_showAadharDesigned_to_dashboardFragment"
+            app:destination="@id/dashboardFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/checkStatusSc2"
+        android:name="com.example.aadharaddressupdation.ui.request.CheckStatusSc2"
+        android:label="fragment_check_status_sc2"
+        tools:layout="@layout/fragment_check_status_sc2" >
+        <action
+            android:id="@+id/action_checkStatusSc2_to_dashboardFragment"
+            app:destination="@id/dashboardFragment" />
+    </fragment>
 </navigation>

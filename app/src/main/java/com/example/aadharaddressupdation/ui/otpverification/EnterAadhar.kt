@@ -1,12 +1,14 @@
 package com.example.aadharaddressupdation.ui.otpverification
 
 import android.annotation.SuppressLint
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
-import android.util.Xml
+import android.util.Base64.DEFAULT
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.URLUtil.decode
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
@@ -15,25 +17,19 @@ import androidx.annotation.RequiresApi
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import com.android.volley.Request
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
 import com.example.aadharaddressupdation.R
 import com.example.aadharaddressupdation.databinding.FragmentEnterAadharBinding
-import com.example.aadharaddressupdation.models.OtpRes
-import com.google.firebase.auth.FirebaseAuth
-import org.xmlpull.v1.XmlPullParser
-import org.xmlpull.v1.XmlPullParserFactory
-import org.xmlpull.v1.XmlSerializer
-import java.io.ByteArrayInputStream
-import java.io.InputStream
-import java.time.Instant
-import java.time.format.DateTimeFormatter
+import org.json.JSONObject
+import java.io.ByteArrayOutputStream
 import java.util.*
-import javax.xml.bind.JAXBElement
 
 
 class EnterAadhar : Fragment() {
     private var _binding: FragmentEnterAadharBinding?=null
     private val binding get()=_binding
-    private lateinit var firebaseAuth: FirebaseAuth
 
 
     override fun onCreateView(
@@ -49,15 +45,10 @@ class EnterAadhar : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
-//        System.setProperty("org.apache.poi.javax.xml.stream.XMLInputFactory", "com.fasterxml.aalto.stax.InputFactoryImpl");
-//        System.setProperty("org.apache.poi.javax.xml.stream.XMLOutputFactory", "com.fasterxml.aalto.stax.OutputFactoryImpl");
-//        System.setProperty("org.apache.poi.javax.xml.stream.XMLEventFactory", "com.fasterxml.aalto.stax.EventFactoryImpl");
-
         super.onViewCreated(view, savedInstanceState)
         val enteredNumber: EditText? = binding?.aadharNumber
         val progress: ProgressBar? = binding?.progressBar
         val contButton: Button? = binding?.continueButton
-        firebaseAuth = FirebaseAuth.getInstance()
 
         binding?.continueButton?.setOnClickListener {
             if (enteredNumber != null) {
@@ -66,73 +57,12 @@ class EnterAadhar : Fragment() {
                         progress?.visibility = View.VISIBLE
                         contButton?.visibility = View.INVISIBLE
                         val uid = enteredNumber.text.toString()
-                        val txnId: String = UUID.randomUUID().toString()
-                        val otpApiService=OtpAPIService()
-                        otpApiService.readProperties();
-                        val  ts= DateTimeFormatter.ISO_INSTANT.format(Instant.now())
-                        val xmlSerializer: XmlSerializer? = Xml.newSerializer()
-                        val xmlString:String=xmlSerializer!!.document {
-                            element("Otp"){
-                                attribute("uid",uid)
-                                attribute("ac", R.string.AUTH_REQUEST_AUA.toString())
-                                attribute("sa",R.string.AUTH_REQUEST_ASA.toString())
-                                attribute("ver","2.5")
-                                attribute("txn",txnId)
-                                attribute("ts",ts)
-                                attribute("lk",R.string.AUTH_REQUEST_AUA_LK.toString())
-                                attribute("type","A")
-                            }
-                        }
-                        val temp=XmlSigner();
-                        temp.setupBouncyCastle();
-                        val response=otpApiService.getParsedResponseFromOtpServer(xmlString,uid)
-                        val xml_data: InputStream = ByteArrayInputStream(response.toByteArray())
-                        val factory=XmlPullParserFactory.newInstance()
-                        val parser=factory.newPullParser()
-                        var result:String="n"
-                        parser.setInput(xml_data,null);
-                        var event=parser.eventType
-                        while(event!=XmlPullParser.END_DOCUMENT)
+                        sendOTP(uid)
+                    }
+                        else
                         {
-                            val tagName=parser.name
-                            when(event)
-                            {
-                                XmlPullParser.END_TAG->{
-                                    if(tagName=="OtpRes")
-                                    {
-                                        result=parser.getAttributeName(0)
-                                    }
-                                }
-                            }
-                            event=parser.next()
+                            Toast.makeText(activity, "Enter full Aadhar Number", Toast.LENGTH_SHORT).show()
                         }
-                        if(result=="y")
-                        {
-                            binding?.tempid?.text="done"
-                            val bundle= bundleOf("txnId" to txnId,"uid" to uid)
-                            //val action=EnterAadharDirections.actionEnterOTPToEnterOTP2(amount,verificationId)
-                            findNavController().navigate(R.id.enterOTP2,bundle)
-                        }
-                       else
-                        {
-                         Toast.makeText(activity, "Some error occurred, please try again after some time.", Toast.LENGTH_SHORT).show()
-                     }
-
-
-
-//                        val otpRes: OtpRes = otpApiService.getOtpRes(uid, txnId)
-//                        val ans=otpRes.ret.value()
-//                        if(ans=="y")
-//                        {
-//                            binding?.tempid?.text="done"
-////                            val bundle= bundleOf("txnId" to txnId,"uid" to uid)
-////                            //val action=EnterAadharDirections.actionEnterOTPToEnterOTP2(amount,verificationId)
-////                            findNavController().navigate(R.id.enterOTP2,bundle)
-//                        }
-//                        else
-//                        {
-//                            Toast.makeText(activity, "Some error occurred, please try again after some time.", Toast.LENGTH_SHORT).show()
-//                        }
                     }
                     else
                     {
@@ -141,9 +71,123 @@ class EnterAadhar : Fragment() {
                 }
                 else
                 {
-                    Toast.makeText(activity, "Enter Aadhar Number", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(activity,"Please enter Aadhar Number First",Toast.LENGTH_SHORT).show()
                 }
             }
         }
+
+    private fun sendOTP(uid:String)
+    {
+        val tran=UUID.randomUUID().toString()
+        val jsonObject = JSONObject()
+        jsonObject.put("uid",uid)
+        jsonObject.put("txnId", tran)
+        val url="https://stage1.uidai.gov.in/onlineekyc/getOtp"
+        val que= Volley.newRequestQueue(context)
+        val req=JsonObjectRequest(Request.Method.POST,url,jsonObject,
+            { response->
+                val status=response["status"].toString()
+                if(status=="Y" || status=="y")
+                {
+                    val bundle= bundleOf("uid" to uid,"txnId" to tran)
+                    //val action=EnterAadharDirections.actionEnterOTPToEnterOTP2(amount,verificationId)
+                    findNavController().navigate(R.id.enterOTP2,bundle)
+                }
+                else
+                {
+                    binding?.progressBar?.visibility = View.INVISIBLE
+                    binding?.continueButton?.visibility = View.VISIBLE
+                    val dikkat=response["errCode"].toString()
+                    if(dikkat=="998")
+                        Toast.makeText(activity, "Incorrect Aadhar number", Toast.LENGTH_SHORT).show()
+                    else
+                        Toast.makeText(activity, "Unknown error occurred, please try again after some time", Toast.LENGTH_SHORT).show()
+                }
+            },{
+                binding?.progressBar?.visibility = View.INVISIBLE
+                binding?.continueButton?.visibility = View.VISIBLE
+                Toast.makeText(activity, "Some error occurred on our end: ${it}, please try again after some time.", Toast.LENGTH_SHORT).show()
+            }
+        )
+        que.add(req)
     }
+
+
+//    private fun setImage(base64String: String)
+//    {
+//        val byteArrayOutputStream = ByteArrayOutputStream()
+//        var imageBytes: ByteArray = byteArrayOutputStream.toByteArray()
+//        imageBytes = android.util.Base64.decode(base64String, DEFAULT)
+//        val decodedImage =
+//            BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+//        binding?.captchaImage?.setImageBitmap(decodedImage)
+//    }
+//
+//    private fun loadCaptcha()
+//    {
+//        var txnID:String=""
+//        var base64String:String=""
+//        var status:String=""
+//        var statusCode=""
+//        val jsonObject = JSONObject()
+//        jsonObject.put("langCode", "en")
+//        jsonObject.put("captchaLength", "3")
+//        jsonObject.put("captchaType", "2")
+//        val url="https://stage1.uidai.gov.in/unifiedAppAuthService/api/v2/get/captcha"
+//        val que= Volley.newRequestQueue(context)
+//        val req=JsonObjectRequest(Request.Method.POST,url,jsonObject,
+//            { response->
+//                txnID=response["captchaTxnId"].toString()
+//                base64String=response["captchaBase64String"].toString()
+//                status=response["status"].toString()
+//                statusCode=response["statusCode"].toString()
+//                Toast.makeText(activity, "$status:status, code: $statusCode", Toast.LENGTH_SHORT).show()
+//                setImage(base64String)
+//            },{
+//                Toast.makeText(activity, "Some error occurred, please try again after some time.", Toast.LENGTH_SHORT).show()
+//            }
+//        )
+//        que.add(req)
+//    }
+//
+//
+//    private fun verifyCaptchaAndGetOtp(txnId:String,uid:String, captchaValue:String)
+//    {
+//        val tran="MYAADHAAR:"+UUID.randomUUID().toString()
+//        val jsonObject = JSONObject()
+//        jsonObject.put("uidNumber", uid)
+//        jsonObject.put("captchaTxnId", txnId)
+//        jsonObject.put("captchaValue", captchaValue)
+//        jsonObject.put("transactionId", tran)
+//        val url="https://stage1.uidai.gov.in/unifiedAppAuthService/api/v2/generate/aadhaar/otp"
+//        val que= Volley.newRequestQueue(context)
+//        val req=JsonObjectRequest(Request.Method.POST,url,jsonObject,
+//            { response->
+//                val status=response["status"].toString()
+//                val toTran=response["txnId"].toString()
+//                if(status=="Success")
+//                {
+//                    val bundle= bundleOf("uid" to uid,"txnId" to toTran)
+//                    //val action=EnterAadharDirections.actionEnterOTPToEnterOTP2(amount,verificationId)
+//                    findNavController().navigate(R.id.enterOTP2,bundle)
+//                }
+//                else
+//                {
+//                    binding?.captchaValue?.text?.clear();
+//                    binding?.aadharNumber?.text?.clear();
+//                    Toast.makeText(activity, "I guess you're not human after all.", Toast.LENGTH_SHORT).show()
+//                }
+//
+//            },{
+//                Toast.makeText(activity, "Some error occurred, please try again after some time.", Toast.LENGTH_SHORT).show()
+//            }
+//        )
+//        que.add(req)
+//
+//    }
+
+
+
 }
+
+

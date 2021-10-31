@@ -3,9 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.otpverification.EnterOTP"
-
-    >
+    tools:context=".ui.request.LandLordEKyc1">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,53 +11,68 @@
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_baseline_verified_user_24"
-        android:layout_marginTop="30dp"
-        android:id="@+id/topImage"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_send_24"
+            android:layout_marginTop="90dp"
+            android:id="@+id/topImage"/>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:text="@string/OTPHeader"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:text="@string/OTPHeader"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:layout_marginEnd="50dp"
-        android:layout_marginTop="8dp"
-        android:gravity="center"
-        android:text="Please Enter the OTP sent to your registered mobile number"
-        android:textSize="14sp"
-        />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:id="@+id/forEkyc"
+            android:text="For the e-KYC process you'll need to first verify with OTP and then proceed to download e-KYC "
+            android:textSize="14sp"
+            />
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginLeft="30dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="30dp"
-        android:layout_marginBottom="15dp"
-        android:layout_marginRight="30dp"
-        android:gravity="center"
-        android:textSize="14sp"
-        android:id="@+id/showAadhar"
-        />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginBottom="15dp"
+            android:layout_marginRight="30dp"
+            android:gravity="center"
+            android:id="@+id/changeText"
+            android:text="@string/showAadhar"
+            android:textSize="14sp"
+            />
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="30dp"
+            android:gravity="center"
+            android:textSize="14sp"
+            android:id="@+id/currentAadhar"
+            />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center"
+            android:id="@+id/otpBox"
             android:layout_marginTop="30dp"
+            android:visibility="gone"
             >
 
             <EditText
@@ -149,44 +162,26 @@
 
         </LinearLayout>
 
-         <LinearLayout
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             android:layout_marginTop="20dp"
-             android:gravity="center"
-             android:orientation="horizontal">
-
-
-             <TextView
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                 android:text="Didn't Receive the OTP?"
-                 android:textSize="14sp"/>
-
-             <TextView
-                 android:layout_width="wrap_content"
-                 android:layout_height="wrap_content"
-                 android:layout_marginStart="8dp"
-                 android:text="RESEND OTP"
-                 android:textSize="14sp"
-                 android:textStyle="bold"
-                 android:id="@+id/resendOtp"
-
-                 />
-         </LinearLayout>
-
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             >
-
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/continueButton"
-                android:text="Verify"
+                android:text="Get OTP"
+                android:layout_margin="30dp"
+                android:textStyle="bold" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/getXml"
                 android:layout_margin="30dp"
                 android:textStyle="bold"
+                android:visibility="invisible"
+                android:text="Verify OTP and get e-KYC"
                 />
 
             <ProgressBar
@@ -198,8 +193,6 @@
                 />
         </FrameLayout>
 
-
     </LinearLayout>
-
 
 </ScrollView>

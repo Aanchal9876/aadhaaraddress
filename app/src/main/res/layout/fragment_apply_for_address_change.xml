@@ -12,11 +12,85 @@
         android:orientation="vertical"
         >
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_baseline_location_city_24"
+            android:layout_marginTop="90dp"
+            android:layout_gravity="center"
+            android:id="@+id/topImage"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            android:text="@string/sendRequest"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            />
+
+
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Enter your landlords Aadhar Number"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="30dp"
+            android:layout_marginBottom="20dp"
+            android:gravity="center"
+            android:text="@string/EnterLandlordAadhaar"
+            android:textSize="14sp"
             />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="60dp"
+            android:layout_marginEnd="60dp"
+            android:layout_marginTop="40dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:background="@drawable/backbox"
+            >
+
+            <EditText
+                android:id="@+id/landlordAadhaarNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:background="@null"
+                android:hint="@string/AadhaarHint"
+                android:imeOptions="actionDone"
+                android:importantForAutofill="no"
+                android:inputType="number"
+                android:maxLength="12"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/sendRequestButton"
+                android:text="@string/requestButton"
+                android:layout_margin="30dp"
+                android:textStyle="bold" />
+
+            <ProgressBar
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:visibility="gone"
+                android:layout_gravity="center"
+                android:id="@+id/progressBar"
+                />
+
+        </FrameLayout>
+
     </LinearLayout>
 
 </ScrollView>
