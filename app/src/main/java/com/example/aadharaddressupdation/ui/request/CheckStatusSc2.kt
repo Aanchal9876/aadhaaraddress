@@ -2,12 +2,10 @@ package com.example.aadharaddressupdation.ui.request
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.pm.PackageManager
-import android.location.Location
-import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
@@ -15,25 +13,20 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import com.example.aadharaddressupdation.dao.UserDao
 import com.example.aadharaddressupdation.databinding.FragmentCheckStatusSc2Binding
 import com.example.aadharaddressupdation.models.User
-import com.google.android.gms.location.*
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.firestore.FirebaseFirestore
-import java.util.*
-import android.R
-import android.os.Handler
-
-import android.widget.TextView
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.core.os.bundleOf
-import androidx.navigation.fragment.findNavController
-import com.example.aadharaddressupdation.dao.UserDao
 import kotlin.math.pow
 
 

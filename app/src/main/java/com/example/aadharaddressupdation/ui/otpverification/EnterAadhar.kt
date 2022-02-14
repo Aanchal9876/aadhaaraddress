@@ -1,14 +1,11 @@
 package com.example.aadharaddressupdation.ui.otpverification
 
 import android.annotation.SuppressLint
-import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
-import android.util.Base64.DEFAULT
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.URLUtil.decode
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
@@ -23,7 +20,6 @@ import com.android.volley.toolbox.Volley
 import com.example.aadharaddressupdation.R
 import com.example.aadharaddressupdation.databinding.FragmentEnterAadharBinding
 import org.json.JSONObject
-import java.io.ByteArrayOutputStream
 import java.util.*
 
 
